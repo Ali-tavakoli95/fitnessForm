@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-
 namespace api.Controllers;
 
 [ApiController]
@@ -34,4 +28,35 @@ public class FitnessController : ControllerBase
         return userDto;
     }
 
+    [HttpGet("get-fit-user-by-id/{userId}")]
+    public async Task<ActionResult<UserDto>> GetFitUser(string userId, CancellationToken cancellationToken)
+    {
+        UserDto? userDto = await _fitnessRepository.GetFitUser(userId, cancellationToken);
+
+        if (userDto is null)
+        {
+            return NoContent();
+        }
+
+        return userDto;
+    }
+
+    [HttpPut("update/{userId}")]
+    public async Task<ActionResult<UpdateResult>> UpdateByFitId(string userId, UpdateFormDto userIn, CancellationToken cancellationToken)
+    {
+        if (userIn.Password != userIn.ConfirmPassword)
+            return BadRequest("Password don't match!");
+
+        UpdateResult updateResult = await _fitnessRepository.UpdateByFitId(userId, userIn, cancellationToken);
+
+        return updateResult;
+    }
+
+    [HttpDelete("delete/{userId}")]
+    public async Task<ActionResult<DeleteResult>> Delete(string userId, CancellationToken cancellationToken)
+    {
+        DeleteResult deleteResult = await _fitnessRepository.Delete(userId, cancellationToken);
+
+        return deleteResult;
+    }
 }

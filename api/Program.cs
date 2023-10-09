@@ -28,7 +28,7 @@ builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
 builder.Services.AddCors(options =>
     {
         options.AddDefaultPolicy(policy =>
-            policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200"));
+            policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));
     });
 #endregion Cors
 
@@ -42,14 +42,9 @@ builder.Services.AddScoped<IFitnessFormRepository, FitnessFormRepository>(); // 
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthorization();
 
