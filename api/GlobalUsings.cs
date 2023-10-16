@@ -9,3 +9,4 @@ global using api.DTOs;
 global using api.Interfaces;
 global using api.Repositories;
 global using Microsoft.Extensions.Options;
+global using api.Controllers.Helpers;

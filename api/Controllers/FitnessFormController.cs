@@ -1,8 +1,7 @@
 namespace api.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class FitnessController : ControllerBase
+
+public class FitnessController : BaseApiController
 {
     #region Token Settings
     private readonly IFitnessFormRepository _fitnessRepository;
@@ -20,7 +19,7 @@ public class FitnessController : ControllerBase
         if (userInput.Password != userInput.ConfirmPassword)
             return BadRequest("Password don't match!");
 
-        UserDto? userDto = await _fitnessRepository.Create(userInput, cancellationToken);
+        UserDto? userDto = await _fitnessRepository.CreateAsync(userInput, cancellationToken);
 
         if (userDto is null)
             return BadRequest("Email/UserName is taken.");
@@ -28,10 +27,22 @@ public class FitnessController : ControllerBase
         return userDto;
     }
 
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<UserDto>>> GetAll(CancellationToken cancellationToken)
+    {
+        List<UserDto> userDtos = await _fitnessRepository.GetAllAsync(cancellationToken);
+
+        if (!userDtos.Any())
+            return NoContent();
+
+        return userDtos;
+    }
+
+
     [HttpGet("get-fit-user-by-id/{userId}")]
     public async Task<ActionResult<UserDto>> GetFitUser(string userId, CancellationToken cancellationToken)
     {
-        UserDto? userDto = await _fitnessRepository.GetFitUser(userId, cancellationToken);
+        UserDto? userDto = await _fitnessRepository.GetFitUserAsync(userId, cancellationToken);
 
         if (userDto is null)
         {
@@ -47,7 +58,7 @@ public class FitnessController : ControllerBase
         if (userIn.Password != userIn.ConfirmPassword)
             return BadRequest("Password don't match!");
 
-        UpdateResult updateResult = await _fitnessRepository.UpdateByFitId(userId, userIn, cancellationToken);
+        UpdateResult updateResult = await _fitnessRepository.UpdateByFitIdAsync(userId, userIn, cancellationToken);
 
         return updateResult;
     }
@@ -55,7 +66,7 @@ public class FitnessController : ControllerBase
     [HttpDelete("delete/{userId}")]
     public async Task<ActionResult<DeleteResult>> Delete(string userId, CancellationToken cancellationToken)
     {
-        DeleteResult deleteResult = await _fitnessRepository.Delete(userId, cancellationToken);
+        DeleteResult deleteResult = await _fitnessRepository.DeleteAsync(userId, cancellationToken);
 
         return deleteResult;
     }
