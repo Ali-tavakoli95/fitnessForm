@@ -27,7 +27,7 @@ public class FitnessController : BaseApiController
         return userDto;
     }
 
-    [HttpGet]
+    [HttpGet("get-all")]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetAll(CancellationToken cancellationToken)
     {
         List<UserDto> userDtos = await _fitnessRepository.GetAllAsync(cancellationToken);
